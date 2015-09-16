@@ -101,8 +101,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\GameClasses\GameClasses.csproj">
-      <Project>{0D5D47AE-45CE-4D2F-9226-5E898C719C9D}</Project>
+    <ProjectReference Include="..\GameClasses\GameClasses.csproj">
+      <Project>{0d5d47ae-45ce-4d2f-9226-5e898c719c9d}</Project>
       <Name>GameClasses</Name>
     </ProjectReference>
   </ItemGroup>

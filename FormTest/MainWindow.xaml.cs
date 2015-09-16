@@ -54,7 +54,7 @@ namespace FormTest
 			//this.GameSource = XElement.Load("game.xml");
 			XmlSerializer serializer = new XmlSerializer(typeof(Game));
 
-			FileStream fs = new FileStream("dick.xml", FileMode.Open);
+			FileStream fs = new FileStream("game.xml", FileMode.Open);
 			this.GameSource = (Game)serializer.Deserialize(fs);
 			fs.Close();
 

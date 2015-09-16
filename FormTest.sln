@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormTest", "FormTest\FormTest.csproj", "{EC83170E-4CCD-4210-B29A-6F438A1FD2CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameClasses", "..\GameClasses\GameClasses.csproj", "{0D5D47AE-45CE-4D2F-9226-5E898C719C9D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameClasses", "GameClasses\GameClasses.csproj", "{0D5D47AE-45CE-4D2F-9226-5E898C719C9D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
