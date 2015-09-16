@@ -1,43 +1,55 @@
-# Windows image file caches
-Thumbs.db
-ehthumbs.db
 
-# Folder config file
-Desktop.ini
+JLinkLog.txt
+*.bak
+*.orig
+*.dep
+*.uvopt
+*.suo
+*.user
+_ReSharper.FormTest
 
-# Recycle Bin used on file shares
-$RECYCLE.BIN/
+TESS/
+bin/
+obj/
+_ReSharper.Frame
+_ReSharper.DB Tests
+hr2006.5.1.ReSharper.user
+_ReSharper.hr2006/
+DataBaseConverter/_ReSharper.DataBaseConverter/
+docs.xml
+/CheckedCombo/CheckedCombo.5.1.ReSharper.user
+CheckedCombo/_ReSharper.CheckedCombo/
+PrintedDocuments/
+DataBaseConverter/app.config
+DataBaseConverter/UpgradeLog.XML
+DataBaseUpdater/app.config
+DataBaseConverter/app.config
+DataLayer/App.Config
+Docs/Bolnichni 2011.xls
+Docs/Presense form.xls
+Git Bash.lnk
+HolidayPlan/Frame/HolidayPlan/App.Config
+HRDB2Clean/Config.xml
+HRDB2Clean/mysql.exe
+HRExcelConverter/WindowsApplication1/Properties/DataSources/HRDBEntities.datasource
+Installer/HRSetup-2.22.rar
+Installer/HRSetup.exe
+Installer/HRSetup.rar
+Installer/nkpd.xls
+NewDBProject/Greshka HR Straldja.JPG
+NewDBProject/HRDB 2012-4-12.sql
+NewDBProject/HRDB 2012-4-20.sql
+NewDBProject/NewDB.docx
+NewDBProject/Straldja 12.04.2012.rar
+NewDBProject/zapoved_za_prekratjavane.rtf
+SerialKeyGenerator/_UpgradeReport_Files/UpgradeReport.css
+SerialKeyGenerator/_UpgradeReport_Files/UpgradeReport.xslt
+SerialKeyGenerator/_UpgradeReport_Files/UpgradeReport_Minus.gif
+SerialKeyGenerator/_UpgradeReport_Files/UpgradeReport_Plus.gif
+Templates/Sysco/Dogovor_Za_Uchenichestvo_New.docx
+Templates/Sysco/Dop.Sporazumenie_Zaplata.docx
+TestDatabase/app.config
+XMLLabels/?—?°???°?????µ.doc
+build_output
+code_drop
 
-# Windows Installer files
-*.cab
-*.msi
-*.msm
-*.msp
-
-# Windows shortcuts
-*.lnk
-
-# =========================
-# Operating System Files
-# =========================
-
-# OSX
-# =========================
-
-.DS_Store
-.AppleDouble
-.LSOverride
-
-# Thumbnails
-._*
-
-# Files that might appear on external disk
-.Spotlight-V100
-.Trashes
-
-# Directories potentially created on remote AFP share
-.AppleDB
-.AppleDesktop
-Network Trash Folder
-Temporary Items
-.apdisk
