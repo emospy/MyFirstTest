@@ -20,6 +20,7 @@ using System.Xml.Linq;
 using System.Xml.Serialization;
 using GameClasses;
 using Microsoft.Win32;
+using System.Security.Cryptography;
 
 namespace FormTest
 {
@@ -84,7 +85,6 @@ namespace FormTest
 
 				this.AddRemoveStats(epizode);
 			}
-
 
 
 			this.Game.CurrentEpizode = EpizodeNumber;
@@ -273,7 +273,79 @@ namespace FormTest
 			this.PrepareConditions(epizode);
 		}
 
-		private void PrepareConditions(EpizodeXML epizode)
+        private void PrepareRollBacks(EpizodeXML epizode)
+        {
+            var conditions = epizode.Choices.ChanceRollBacks;
+            foreach (var cond in conditions)
+            {
+                var predicates = cond.Predicates;
+                var pass = true;
+                foreach (var pred in predicates)
+                {
+                    var type = pred.Type;
+                    if (type == PredicateTypes.eInventory)
+                    {
+                        var name = pred.Name;
+
+                        bool aval = pred.IsAvailable;
+
+                        switch (pred.Type)
+                        {
+                            case PredicateTypes.eInventory:
+                                {
+                                    var inv = this.Game.lstInventory.Find(i => i.Name == name);
+
+                                    if (aval == true)
+                                    {
+                                        int qty = pred.Quantity;
+
+                                        if (inv == null || inv.Quantity < qty)
+                                        {
+                                            pass = false;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (inv != null && inv.Quantity != 0)
+                                        {
+                                            pass = false;
+                                        }
+                                    }
+                                    break;
+                                }
+                            case PredicateTypes.eStat:
+                                {
+                                    var inv = this.Game.lstStats.Find(i => i.Name == name);
+                                    int qty = pred.Quantity;
+                                    if (aval == true)
+                                    {
+                                        if (inv == null || inv.Value < qty)
+                                        {
+                                            pass = false;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (inv != null && inv.Value > qty)
+                                        {
+                                            pass = false;
+                                        }
+                                    }
+                                    break;
+                                }
+                        }
+
+                    }
+                }
+                if (pass)
+                {
+                    this.CreateButton(cond);
+                    break;
+                }
+            }
+        }
+
+        private void PrepareConditions(EpizodeXML epizode)
 		{
 			var conditions = epizode.Choices.Conditions;
 			foreach (var cond in conditions)
@@ -362,7 +434,7 @@ namespace FormTest
 
 				foreach (var chance in chances)
 				{
-					tillNow += chance.Probability;//double.Parse(chance.Attribute(Probability).Value, System.Globalization.NumberStyles.AllowDecimalPoint);
+					tillNow += chance.Probability;
 					if (r < tillNow)
 					{
 						this.CreateButton(chance);
@@ -444,7 +516,7 @@ namespace FormTest
 			//var EpizodeContents = new FlowDocumentScrollViewer();
 			var Flowdoc = new FlowDocument();
 			Paragraph para = new Paragraph();
-			para.Inlines.Add(epizode.ID + "\n" + epizode.Text);
+			para.Inlines.Add(epizode.ID + "\n" + Crypto.Decrypt(epizode.Text, "pass"));
 			Flowdoc.Blocks.Add(para);
 			//this.txtEpizodeContents = new FlowDocumentScrollViewer();
 			this.txtEpizodeContents.Document = Flowdoc;
@@ -602,4 +674,89 @@ namespace FormTest
 		public string Name { get; set; }
 		public int Value { get; set; }
 	}
+
+    static internal class Crypto
+    {
+        // Define the secret salt value for encrypting data
+        private static readonly byte[] salt = Encoding.ASCII.GetBytes("Xamarin.iOS Version: 7.0.6.168");
+
+        /// <summary>
+        /// Takes the given text string and encrypts it using the given password.
+        /// </summary>
+        /// <param name="textToEncrypt">Text to encrypt.</param>
+        /// <param name="encryptionPassword">Encryption password.</param>
+        internal static string Encrypt(string textToEncrypt, string encryptionPassword)
+        {
+            var algorithm = GetAlgorithm(encryptionPassword);
+
+            //Anything to process?
+            if (textToEncrypt == null || textToEncrypt == "") return "";
+
+            byte[] encryptedBytes;
+            using (ICryptoTransform encryptor = algorithm.CreateEncryptor(algorithm.Key, algorithm.IV))
+            {
+                byte[] bytesToEncrypt = Encoding.UTF8.GetBytes(textToEncrypt);
+                encryptedBytes = InMemoryCrypt(bytesToEncrypt, encryptor);
+            }
+            return Convert.ToBase64String(encryptedBytes);
+        }
+
+        /// <summary>
+        /// Takes the given encrypted text string and decrypts it using the given password
+        /// </summary>
+        /// <param name="encryptedText">Encrypted text.</param>
+        /// <param name="encryptionPassword">Encryption password.</param>
+        internal static string Decrypt(string encryptedText, string encryptionPassword)
+        {
+            var algorithm = GetAlgorithm(encryptionPassword);
+
+            //Anything to process?
+            if (encryptedText == null || encryptedText == "") return "";
+
+            byte[] descryptedBytes;
+            using (ICryptoTransform decryptor = algorithm.CreateDecryptor(algorithm.Key, algorithm.IV))
+            {
+                byte[] encryptedBytes = Convert.FromBase64String(encryptedText);
+                descryptedBytes = InMemoryCrypt(encryptedBytes, decryptor);
+            }
+            return Encoding.UTF8.GetString(descryptedBytes);
+        }
+
+        /// <summary>
+        /// Performs an in-memory encrypt/decrypt transformation on a byte array.
+        /// </summary>
+        /// <returns>The memory crypt.</returns>
+        /// <param name="data">Data.</param>
+        /// <param name="transform">Transform.</param>
+        private static byte[] InMemoryCrypt(byte[] data, ICryptoTransform transform)
+        {
+            MemoryStream memory = new MemoryStream();
+            using (Stream stream = new CryptoStream(memory, transform, CryptoStreamMode.Write))
+            {
+                stream.Write(data, 0, data.Length);
+            }
+            return memory.ToArray();
+        }
+
+        /// <summary>
+        /// Defines a RijndaelManaged algorithm and sets its key and Initialization Vector (IV) 
+        /// values based on the encryptionPassword received.
+        /// </summary>
+        /// <returns>The algorithm.</returns>
+        /// <param name="encryptionPassword">Encryption password.</param>
+        private static RijndaelManaged GetAlgorithm(string encryptionPassword)
+        {
+            // Create an encryption key from the encryptionPassword and salt.
+            var key = new Rfc2898DeriveBytes(encryptionPassword, salt);
+
+            // Declare that we are going to use the Rijndael algorithm with the key that we've just got.
+            var algorithm = new RijndaelManaged();
+            int bytesForKey = algorithm.KeySize / 8;
+            int bytesForIV = algorithm.BlockSize / 8;
+            algorithm.Key = key.GetBytes(bytesForKey);
+            algorithm.IV = key.GetBytes(bytesForIV);
+            return algorithm;
+        }
+
+    }
 }

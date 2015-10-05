@@ -148,40 +148,28 @@ namespace GameClasses
 		eSkill,
 	}
 
-	[Serializable]
-	[XmlRoot("Connection")]
-	public class ConnectionXML
-	{
-		[XmlElement("Type")]
-		public ConnectionTypes Type;
-		[XmlElement("Decision")]
-		public Decision Decision;
-		[XmlElement("Chance")]
-		public Chance Chance;
-		[XmlElement("Battle")]
-		public Battle Battle;
-		[XmlElement("Condition")]
-		public Condition Condition;
-		[XmlElement("InventoryCondition")]
-		public InventoryCondition InventoryCondition;
-	}
+    public class ChanceRollBack : Condition
+    {
+    }
 
-	public class Choices
+    public class Choices
 	{
 		public List<Decision> Decisions;
 		public List<Chance> Chances;
 		public List<Battle> Battles;
 		public List<Condition> Conditions;
 		public List<InventoryCondition> InventoryConditions;
+        public List<ChanceRollBack> ChanceRollBacks;
 
-		public Choices()
+        public Choices()
 		{
 			this.Decisions = new List<Decision>();
 			this.Chances = new List<Chance>();
 			this.Battles = new List<Battle>();
 			this.Conditions = new List<Condition>();
 			this.InventoryConditions = new List<InventoryCondition>();
-		}
+            this.ChanceRollBacks = new List<ChanceRollBack>();
+        }
 	}
 
 	[Serializable]
